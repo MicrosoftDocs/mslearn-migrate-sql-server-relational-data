@@ -51,7 +51,7 @@
           "metadata": {
               "description": "The base URI where artifacts required by this template are located including a trailing '/'"
           },
-          "defaultValue": "https://raw.githubusercontent.com/arcanecode/Social/master/"
+          "defaultValue": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/master/"
       },
       "_artifactsLocationSasToken": {
           "type": "securestring",
