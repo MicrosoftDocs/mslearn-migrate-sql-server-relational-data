@@ -64,7 +64,7 @@
   "variables": {
       "DMSServiceName": "admsdemodms",
       "sourceServerName": "admsdemovm",
-      "targetServerName": "[concat('admsdemosql', uniqueString(resourceGroup().id))]",
+      "targetServerName": "[concat('admsdemosql-', uniqueString(resourceGroup().id))]",
       "scriptLocation": "AddDatabaseToSqlServer.ps1",
       "bakFileLocation": "Social.bak",
       "bacpacFileLocation": "Social.bacpac",
