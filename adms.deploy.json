@@ -51,7 +51,7 @@
           "metadata": {
               "description": "The base URI where artifacts required by this template are located including a trailing '/'"
           },
-          "defaultValue": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/master/"
+          "defaultValue": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/blob/master/"
       },
       "_artifactsLocationSasToken": {
           "type": "securestring",
@@ -64,7 +64,7 @@
   "variables": {
       "DMSServiceName": "admsdemodms",
       "sourceServerName": "admsdemovm",
-      "targetServerName": "[concat('admsdemosql-', uniqueString(resourceGroup().id))]",
+      "targetServerName": "[concat('admsdemosql', uniqueString(resourceGroup().id))]",
       "scriptLocation": "AddDatabaseToSqlServer.ps1",
       "bakFileLocation": "Social.bak",
       "bacpacFileLocation": "Social.bacpac",
@@ -224,38 +224,6 @@
                       }
                   }
               }
-          ]
-      },
-      {
-          "type": "Microsoft.DataMigration/services",
-          "sku": {
-            "name": "Standard_1vCores",
-            "tier": "Standard",
-            "size": "1 vCores"
-          },
-          "name": "[variables('DMSServiceName')]",
-          "apiVersion": "2017-11-15-privatepreview",
-          "location": "[parameters('location')]",
-          "properties": {
-              "virtualSubnetId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('adVNet'), variables('defaultSubnetName'))]"
-          },
-          "resources": [
-              {
-                  "type": "projects",
-                  "name": "SqlToSqlDbMigrationProject",
-                  "apiVersion": "2017-11-15-privatepreview",
-                  "location": "[parameters('location')]",
-                  "properties": {
-                      "sourcePlatform": "SQL",
-                      "targetPlatform": "SQLDB"
-                  },
-                  "dependsOn": [
-                      "[resourceId('Microsoft.DataMigration/services', variables('DMSServiceName'))]"
-                  ]
-              }
-          ],
-          "dependsOn": [
-              "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('adVNet'), variables('defaultSubnetName'))]"
           ]
       },
       {
@@ -487,25 +455,7 @@
                       "collation": "SQL_Latin1_General_CP1_CI_AS",
                       "maxSizeBytes": 2147483648,
                       "zoneRedundant": "false"
-                  },
-                  "resources": [
-                      {
-                          "name": "Import",
-                          "type": "extensions",
-                          "apiVersion": "2014-04-01-preview",
-                          "dependsOn": [
-                              "[concat('Microsoft.Sql/servers/', concat(variables('targetServerName')), '/databases/', variables('databaseName'))]"
-                          ],
-                          "properties": {
-                              "storageKey": "?",
-                              "storageKeyType": "[variables('storageKeyType')]",
-                              "storageUri": "https://templatebotstorage.blob.core.windows.net/bacpacs/AdventureWorks2016.bacpac",
-                              "administratorLogin": "[parameters('targetSqlDbAdministratorLogin')]",
-                              "administratorLoginPassword": "[parameters('targetSqlDbAdministratorPassword')]",
-                              "operationMode": "Import"
-                          }
-                      }
-                  ]
+                  }
               },
               {
                   "type": "firewallrules",
