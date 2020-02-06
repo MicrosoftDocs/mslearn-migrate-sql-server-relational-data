@@ -2,8 +2,8 @@ param(
     [string]
     $userName,
 	
-	[string]
-	$password
+  	[string]
+	  $password
 )
 
 if ((Get-Command Install-PackageProvider -ErrorAction Ignore) -eq $null)
@@ -28,32 +28,39 @@ else
 	Import-Module -Name SqlServer;
 }
 
-$fileList = Invoke-Sqlcmd `
-                    -QueryTimeout 0 `
-                    -ServerInstance . `
-                    -UserName $username `
-                    -Password $password `
-                    -Query "restore filelistonly from disk='$($pwd)\Social.bak'";
+$query = @'
+CREATE DATABASE Social;
+GO
 
-# Create move records for each file in the backup
-$relocateFiles = @();
+USE Social;
+GO
 
-foreach ($nextBackupFile in $fileList)
-{
-    # Move the file to the default data directory of the default instance
-    $nextBackupFileName = Split-Path -Path ($nextBackupFile.PhysicalName) -Leaf;
-    $relocateFiles += New-Object `
-        Microsoft.SqlServer.Management.Smo.RelocateFile( `
-            $nextBackupFile.LogicalName,
-            "$env:temp\$($nextBackupFileName)");
-}
+CREATE TABLE dbo.Twitters (
+  TwitterKey INT IDENTITY PRIMARY KEY
+, Handle     NVARCHAR(256)
+, Link       NVARCHAR(256)
+)
+GO
 
-$securePassword = ConvertTo-SecureString $password -AsPlainText -Force
-$credentials = New-Object System.Management.Automation.PSCredential ($username, $securePassword)
-Restore-SqlDatabase `
-	-ReplaceDatabase `
-	-ServerInstance . `
-	-Database "Social" `
-	-BackupFile "$pwd\Social.bak" `
-	-RelocateFile $relocateFiles `
-	-Credential $credentials; 
+INSERT dbo.Twitters
+  (Handle, Link)
+VALUES
+  ('Azure Data Factory', 'https://twitter.com/DataAzure')
+, ('Azure Data Studio', 'https://twitter.com/AzureDataStudio')
+, ('Azure SQL Database', 'https://twitter.com/AzureSQLDB')
+, ('Azure Portal', 'https://twitter.com/AzurePortal')
+, ('Microsoft Azure', 'https://twitter.com/Azure')
+, ('Azure Cosmos DB', 'https://twitter.com/AzureCosmosDB')
+, ('SQL Docs', 'https://twitter.com/SQLDocs')
+, ('Microsoft SQL Server', 'https://twitter.com/SQLServer')
+GO
+'@
+
+
+Invoke-Sqlcmd `
+  -QueryTimeout 0 `
+  -ServerInstance . `
+  -UserName $username `
+  -Password $password `
+	-Query $query
+	
