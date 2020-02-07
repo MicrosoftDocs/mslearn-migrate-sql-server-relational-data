@@ -51,7 +51,7 @@
           "metadata": {
               "description": "The base URI where artifacts required by this template are located including a trailing '/'"
           },
-          "defaultValue": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/blob/master/Social.bak"
+          "defaultValue": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/blob/master/"
       },
       "_artifactsLocationSasToken": {
           "type": "securestring",
@@ -66,9 +66,10 @@
       "sourceServerName": "admsdemovm",
       "targetServerName": "[concat('admsdemosql', uniqueString(resourceGroup().id))]",
       "scriptLocation": "AddDatabaseToSqlServer.ps1",
-      "bakFileLocation": "Social.bak",
+      "scripturi": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/master/AddDatabaseToSqlServer.ps1",
+      "bakFileLocation": "https://github.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/raw/master/Social.bak",
       "bacpacFileLocation": "Social.bacpac",
-      "scriptFiles": "[createarray(concat(parameters('_artifactsLocation'), variables('scriptLocation')), concat(parameters('_artifactsLocation'), variables('bakFileLocation')))]",
+      "scriptFiles": "[createarray(variables('scripturi'))]",
       "scriptParameters": "[concat('-userName ', parameters('sourceWindowsAdminUserName'), ' -password \"', parameters('sourceWindowsAdminPassword'))]",
       "storageAccountNamePrefix": "admsdemost",
       "storageAccountName": "[toLower(concat(variables('storageAccountNamePrefix'), uniqueString(resourceGroup().id)))]",
