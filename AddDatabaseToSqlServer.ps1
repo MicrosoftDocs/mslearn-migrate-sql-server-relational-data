@@ -1,9 +1,9 @@
 param(
     [string]
     $userName,
-	
-  	[string]
-	  $password
+    
+    [string]
+    $password
 )
 
 if ((Get-Command Install-PackageProvider -ErrorAction Ignore) -eq $null)
@@ -56,11 +56,9 @@ VALUES
 GO
 '@
 
-
 Invoke-Sqlcmd `
   -QueryTimeout 0 `
   -ServerInstance . `
   -UserName $username `
   -Password $password `
-	-Query $query
-	
+  -Query $query
