@@ -9,13 +9,6 @@
               "description": "Location where the resources will be deployed."
           }
       },
-      "createPublicIP": {
-          "defaultValue": true,
-          "type": "bool",
-          "metadata": {
-              "description": "Do you want to create a public IP address for the source server?"
-          }
-      },
       "sourceWindowsAdminUserName": {
           "type": "string",
           "metadata": {
@@ -48,6 +41,7 @@
       }
   },
   "variables": {
+      "createPublicIP": true,
       "sourceServerName": "admsdemovm",
       "targetServerName": "[concat('admsdemosql', uniqueString(resourceGroup().id))]",
       "scriptLocation": "AddDatabaseToSqlServer.ps1",
@@ -226,7 +220,7 @@
                           "subnet": {
                               "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('adVNet'), variables('defaultSubnetName'))]"
                           },
-                          "publicIPAddress": "[if(parameters('createPublicIP'), variables('publicIpAddressId'), json('null'))]",
+                          "publicIPAddress": "[if(variables('createPublicIP'), variables('publicIpAddressId'), json('null'))]",
                           "primary": true,
                           "privateIPAddressVersion": "IPv4"
                       }
@@ -331,7 +325,7 @@
           }
       },
       {
-          "condition": "[parameters('createPublicIP')]",
+          "condition": "[variables('createPublicIP')]",
           "type": "Microsoft.Network/publicIPAddresses",
           "sku": {
               "name": "Basic",
