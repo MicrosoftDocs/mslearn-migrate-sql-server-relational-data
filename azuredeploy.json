@@ -45,30 +45,13 @@
           "metadata": {
               "description": "Administrator Password for the Target Azure SQL DB Server."
           }
-      },
-      "_artifactsLocation": {
-          "type": "string",
-          "metadata": {
-              "description": "The base URI where artifacts required by this template are located including a trailing '/'"
-          },
-          "defaultValue": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/blob/master/"
-      },
-      "_artifactsLocationSasToken": {
-          "type": "securestring",
-          "metadata": {
-              "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated. Use the defaultValue if the staging location is not secured."
-          },
-          "defaultValue": ""
       }
   },
   "variables": {
-      "DMSServiceName": "admsdemodms",
       "sourceServerName": "admsdemovm",
       "targetServerName": "[concat('admsdemosql', uniqueString(resourceGroup().id))]",
       "scriptLocation": "AddDatabaseToSqlServer.ps1",
       "scripturi": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/master/AddDatabaseToSqlServer.ps1",
-      "bakFileLocation": "https://github.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/raw/master/Social.bak",
-      "bacpacFileLocation": "Social.bacpac",
       "scriptFiles": "[createarray(variables('scripturi'))]",
       "scriptParameters": "[concat('-userName ', parameters('sourceWindowsAdminUserName'), ' -password \"', parameters('sourceWindowsAdminPassword'))]",
       "storageAccountNamePrefix": "admsdemost",
@@ -79,7 +62,6 @@
       "adVNet": "admsdemo-vnet",
       "defaultSubnetName": "default",
       "databaseName": "Social",
-      "storageKeyType": "SharedAccessKey",
       "publicIpAddressId": {
           "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('publicIPSourceServer'))]"
       }
