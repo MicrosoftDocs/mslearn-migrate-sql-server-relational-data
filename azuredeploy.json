@@ -10,33 +10,42 @@
           }
       },
       "sourceWindowsAdminUserName": {
+          "defaultValue": "windowsadmin",
           "type": "string",
           "metadata": {
-              "description": "Windows Authentication user name for the source server"
+              "description": "Windows admin user name for the source server"
           }
       },
       "sourceWindowsAdminPassword": {
           "type": "securestring",
           "metadata": {
-              "description": "Windows Authentication password for the source server"
+              "description": "Windows admin password for the source server"
           }
       },
-      "sourceSqlAuthenticationPassword": {
+      "sourceSqlAdminUserName": {
+          "defaultValue": "sqladmin",
+          "type": "string",
+          "metadata": {
+              "description": "SQL Server user name for the source server"
+          }
+      },
+      "sourceSqlAdminPassword": {
           "type": "securestring",
           "metadata": {
-              "description": "Sql Authentication password for the source server (User name will be same as Windows Auth)"
+              "description": "SQL Server password for the source server"
           }
       },
       "targetSqlDbAdministratorLogin": {
+          "defaultValue": "azuresqladmin"
           "type": "string",
           "metadata": {
-              "description": "Administrator User name for the Target Azure SQL DB Server."
+              "description": "Administrator user name for the target Azure SQL server."
           }
       },
       "targetSqlDbAdministratorPassword": {
           "type": "securestring",
           "metadata": {
-              "description": "Administrator Password for the Target Azure SQL DB Server."
+              "description": "Administrator password for the target Azure SQL server."
           }
       }
   },
@@ -174,8 +183,8 @@
                           }
                       },
                       "protectedSettings": {
-                          "SQLAuthUpdateUserName": "[parameters('sourceWindowsAdminUserName')]",
-                          "SQLAuthUpdatePassword": "[parameters('sourceSqlAuthenticationPassword')]"
+                          "SQLAuthUpdateUserName": "[parameters('sourceSqlAdminUserName')]",
+                          "SQLAuthUpdatePassword": "[parameters('sourceSqlAdminPassword')]"
                       }
                   }
               },
