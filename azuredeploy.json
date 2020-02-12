@@ -2,13 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-      "location": {
-          "defaultValue": "[resourceGroup().location]",
-          "type": "string",
-          "metadata": {
-              "description": "Location where the resources will be deployed."
-          }
-      },
       "sourceWindowsAdminUserName": {
           "defaultValue": "windowsadmin",
           "type": "string",
@@ -50,6 +43,7 @@
       }
   },
   "variables": {
+      "location":"[resourceGroup().location]",
       "createPublicIP": true,
       "sourceServerName": "admsdemovm",
       "targetServerName": "[concat('admsdemosql', uniqueString(resourceGroup().id))]",
@@ -74,7 +68,7 @@
           "type": "Microsoft.Compute/virtualMachines",
           "name": "[variables('sourceServerName')]",
           "apiVersion": "2017-12-01",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "dependsOn": [
               "[resourceId('Microsoft.Network/networkInterfaces', variables('sourceNicName'))]"
           ],
@@ -139,7 +133,7 @@
                   "apiVersion": "2017-12-01",
                   "type": "extensions",
                   "name": "SqlIaasExtension",
-                  "location": "[parameters('location')]",
+                  "location": "[variables('location')]",
                   "dependsOn": [
                       "[concat('Microsoft.Compute/virtualMachines/', variables('sourceServerName'))]"
                   ],
@@ -150,7 +144,7 @@
                       "autoUpgradeMinorVersion": "true",
                       "settings": {
                           "AutoTelemetrySettings": {
-                              "Region": "[parameters('location')]"
+                              "Region": "[variables('location')]"
                           },
                           "AutoPatchingSettings": {
                               "PatchCategory": "WindowsMandatoryUpdates",
@@ -192,7 +186,7 @@
                   "apiVersion": "2017-12-01",
                   "type": "extensions",
                   "name": "CustomScriptExtension",
-                  "location": "[parameters('location')]",
+                  "location": "[variables('location')]",
                   "dependsOn": [
                       "[concat('Microsoft.Compute/virtualMachines/', variables('sourceServerName'))]",
                       "[concat('Microsoft.Compute/virtualMachines/', concat(variables('sourceServerName'),'/extensions/SqlIaasExtension'))]"
@@ -216,7 +210,7 @@
           "type": "Microsoft.Network/networkInterfaces",
           "name": "[variables('sourceNicName')]",
           "apiVersion": "2018-02-01",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "dependsOn": [
               "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('adVNet'), variables('defaultSubnetName'))]"
           ],
@@ -243,7 +237,7 @@
           "type": "Microsoft.Network/networkSecurityGroups",
           "name": "[variables('sourceServerNSG')]",
           "apiVersion": "2018-02-01",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "properties": {
               "defaultSecurityRules": [
                   {
@@ -342,7 +336,7 @@
           },
           "name": "[variables('publicIPSourceServer')]",
           "apiVersion": "2018-02-01",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "properties": {
               "publicIPAddressVersion": "IPv4",
               "publicIPAllocationMethod": "Dynamic",
@@ -353,7 +347,7 @@
           "type": "Microsoft.Network/virtualNetworks",
           "name": "[variables('adVNet')]",
           "apiVersion": "2018-02-01",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "properties": {
               "addressSpace": {
                   "addressPrefixes": [
@@ -394,7 +388,7 @@
           "kind": "Storage",
           "name": "[variables('storageAccountName')]",
           "apiVersion": "2017-10-01",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "properties": {
               "networkAcls": {
                   "bypass": "AzureServices",
@@ -418,7 +412,7 @@
           "type": "Microsoft.Sql/servers",
           "name": "[concat(variables('targetServerName'))]",
           "apiVersion": "2015-05-01-preview",
-          "location": "[parameters('location')]",
+          "location": "[variables('location')]",
           "properties": {
               "administratorLogin": "[parameters('targetSqlDbAdministratorLogin')]",
               "administratorLoginPassword": "[parameters('targetSqlDbAdministratorPassword')]",
@@ -433,7 +427,7 @@
                   },
                   "name": "[variables('databaseName')]",
                   "apiVersion": "2017-10-01-preview",
-                  "location": "[parameters('location')]",
+                  "location": "[variables('location')]",
                   "dependsOn": [
                       "[concat('Microsoft.Sql/servers/', concat(variables('targetServerName')))]"
                   ],
@@ -447,7 +441,7 @@
                   "type": "firewallrules",
                   "name": "AllowAllWindowsAzureIps",
                   "apiVersion": "2014-04-01-preview",
-                  "location": "[parameters('location')]",
+                  "location": "[variables('location')]",
                   "dependsOn": [
                       "[concat('Microsoft.Sql/servers/', concat(variables('targetServerName')))]"
                   ],
