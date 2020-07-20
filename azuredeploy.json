@@ -50,7 +50,7 @@
       "scriptLocation": "AddDatabaseToSqlServer.ps1",
       "scripturi": "https://raw.githubusercontent.com/MicrosoftDocs/mslearn-migrate-sql-server-relational-data/master/AddDatabaseToSqlServer.ps1",
       "scriptFiles": "[createarray(variables('scripturi'))]",
-      "scriptParameters": "[concat('-userName ', parameters('sourceSqlAdminUserName'), ' -password \"', parameters('sourceSqlAdminPassword'))]",
+      "scriptParameters": "[concat('-userName ', parameters('sourceSqlAdminUserName'), ' -password \"', parameters('sourceSqlAdminPassword'), '\"')]",
       "storageAccountNamePrefix": "admsdemost",
       "storageAccountName": "[toLower(concat(variables('storageAccountNamePrefix'), uniqueString(resourceGroup().id)))]",
       "sourceNicName": "admsdemo-nic",
