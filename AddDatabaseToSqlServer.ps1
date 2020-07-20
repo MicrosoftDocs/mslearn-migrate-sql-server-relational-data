@@ -15,6 +15,9 @@ if ((Get-Command Install-PackageProvider -ErrorAction Ignore) -eq $null)
 }
 else
 {
+        # Ensure server can communicate with repository
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+
 	# Conflicts with SqlServer module
 	Remove-Module -Name SQLPS -ErrorAction Ignore;
 
